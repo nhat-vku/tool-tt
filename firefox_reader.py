@@ -1,4 +1,3 @@
-import sqlite3
 from datetime import datetime, timedelta
 import json
 import pandas as pd
