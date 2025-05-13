@@ -1,4 +1,3 @@
-import sqlite3
 from datetime import datetime, timedelta
 import pandas as pd
 import unicodedata
@@ -129,7 +128,7 @@ def calculate_total_records(cursor, db_type, data_type):
     total_records = 0
     if db_type == "History":
         if data_type in ["all", "history"] and table_exists(cursor, "urls"):
-            cursor.execute("SELECT COUNT(*) FROM urls JOIN visits ON urls.id = visits.url")  # Sửa visits.url_id thành visits.url
+            cursor.execute("SELECT COUNT(*) FROM urls JOIN visits ON urls.id = visits.url")  
             total_records += cursor.fetchone()[0]
         if data_type in ["all", "downloads"] and table_exists(cursor, "downloads"):
             cursor.execute("SELECT COUNT(*) FROM downloads")
