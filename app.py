@@ -56,12 +56,10 @@ def get_firefox_profile(user_home, os_type):
 
 
 def get_browser_db_path(browser, user_home, profile="Default", db_type="History"):
-    """Lấy đường dẫn cơ sở dữ liệu SQLite của trình duyệt."""
-    os_type = (
-        "windows"
-        if platform.system() == "Windows"
-        else "macos" if platform.system() == "Darwin" else "linux"
-    )
+    """Lấy đường dẫn cơ sở dữ liệu SQLite của trình duyệt trên Windows."""
+    # Chỉ hỗ trợ Windows
+    if platform.system() != "Windows":
+        return None, "Ứng dụng chỉ hỗ trợ hệ điều hành Windows."
 
     if not user_home.exists():
         return None, f"Thư mục home không tồn tại: {user_home}"
@@ -71,7 +69,7 @@ def get_browser_db_path(browser, user_home, profile="Default", db_type="History"
         return None, f"Trình duyệt không được hỗ trợ: {browser}"
 
     if browser == "firefox":
-        profile_dir, error = get_firefox_profile(user_home, os_type)
+        profile_dir, error = get_firefox_profile(user_home)
         if not profile_dir:
             return None, error
         db_paths = {
@@ -87,87 +85,80 @@ def get_browser_db_path(browser, user_home, profile="Default", db_type="History"
 
     browser_paths = {
         "edge": {
-            "windows": {
-                "History": user_home
-                / "AppData"
-                / "Local"
-                / "Microsoft"
-                / "Edge"
-                / "User Data"
-                / profile
-                / "History",
-                "Cookies": user_home
-                / "AppData"
-                / "Local"
-                / "Microsoft"
-                / "Edge"
-                / "User Data"
-                / profile
-                /"Network"
-                / "Cookies",
-                "Logins": user_home
-                / "AppData"
-                / "Local"
-                / "Microsoft"
-                / "Edge"
-                / "User Data"
-                / profile
-                / "Login Data",
-                "Autofill": user_home
-                / "AppData"
-                / "Local"
-                / "Microsoft"
-                / "Edge"
-                / "User Data"
-                / profile
-                / "Web Data",
-            }
+            "History": user_home
+            / "AppData"
+            / "Local"
+            / "Microsoft"
+            / "Edge"
+            / "User Data"
+            / profile
+            / "History",
+            "Cookies": user_home
+            / "AppData"
+            / "Local"
+            / "Microsoft"
+            / "Edge"
+            / "User Data"
+            / profile
+            / "Network"
+            / "Cookies",
+            "Logins": user_home
+            / "AppData"
+            / "Local"
+            / "Microsoft"
+            / "Edge"
+            / "User Data"
+            / profile
+            / "Login Data",
+            "Autofill": user_home
+            / "AppData"
+            / "Local"
+            / "Microsoft"
+            / "Edge"
+            / "User Data"
+            / profile
+            / "Web Data",
         },
         "brave": {
-            "windows": {
-                "History": user_home
-                / "AppData"
-                / "Local"
-                / "BraveSoftware"
-                / "Brave-Browser"
-                / "User Data"
-                / profile
-                / "History",
-                "Cookies": user_home
-                / "AppData"
-                / "Local"
-                / "BraveSoftware"
-                / "Brave-Browser"
-                / "User Data"
-                / profile
-                /"Network"
-                / "Cookies",
-                "Logins": user_home
-                / "AppData"
-                / "Local"
-                / "BraveSoftware"
-                / "Brave-Browser"
-                / "User Data"
-                / profile
-                / "Login Data",
-                "Autofill": user_home
-                / "AppData"
-                / "Local"
-                / "BraveSoftware"
-                / "Brave-Browser"
-                / "User Data"
-                / profile
-                / "Web Data",
-            }
+            "History": user_home
+            / "AppData"
+            / "Local"
+            / "BraveSoftware"
+            / "Brave-Browser"
+            / "User Data"
+            / profile
+            / "History",
+            "Cookies": user_home
+            / "AppData"
+            / "Local"
+            / "BraveSoftware"
+            / "Brave-Browser"
+            / "User Data"
+            / profile
+            / "Network"
+            / "Cookies",
+            "Logins": user_home
+            / "AppData"
+            / "Local"
+            / "BraveSoftware"
+            / "Brave-Browser"
+            / "User Data"
+            / profile
+            / "Login Data",
+            "Autofill": user_home
+            / "AppData"
+            / "Local"
+            / "BraveSoftware"
+            / "Brave-Browser"
+            / "User Data"
+            / profile
+            / "Web Data",
         },
     }
 
-    db_path = browser_paths.get(browser, {}).get(os_type, {}).get(db_type)
+    db_path = browser_paths.get(browser, {}).get(db_type)
     if not db_path:
-        return (
-            None,
-            f"Hệ điều hành hoặc loại cơ sở dữ liệu không được hỗ trợ cho {browser}: {os_type}, {db_type}",
-        )
+        return None, f"Loại cơ sở dữ liệu không được hỗ trợ cho {browser}: {db_type}"
 
     return db_path, None
 
